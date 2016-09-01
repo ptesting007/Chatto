@@ -30,21 +30,21 @@ public protocol DemoMessageModelProtocol: MessageModelProtocol {
     var status: MessageStatus { get set }
 }
 
-public class FakeMessageSender {
+open class FakeMessageSender {
 
-    public var onMessageChanged: ((message: DemoMessageModelProtocol) -> Void)?
+    open var onMessageChanged: ((_ message: DemoMessageModelProtocol) -> Void)?
 
-    public func sendMessages(_ messages: [DemoMessageModelProtocol]) {
+    open func sendMessages(_ messages: [DemoMessageModelProtocol]) {
         for message in messages {
             self.fakeMessageStatus(message)
         }
     }
 
-    public func sendMessage(_ message: DemoMessageModelProtocol) {
+    open func sendMessage(_ message: DemoMessageModelProtocol) {
         self.fakeMessageStatus(message)
     }
 
-    private func fakeMessageStatus(_ message: DemoMessageModelProtocol) {
+    fileprivate func fakeMessageStatus(_ message: DemoMessageModelProtocol) {
         switch message.status {
         case .success:
             break
@@ -69,14 +69,14 @@ public class FakeMessageSender {
         }
     }
 
-    private func updateMessage(_ message: DemoMessageModelProtocol, status: MessageStatus) {
+    fileprivate func updateMessage(_ message: DemoMessageModelProtocol, status: MessageStatus) {
         if message.status != status {
             message.status = status
             self.notifyMessageChanged(message)
         }
     }
 
-    private func notifyMessageChanged(_ message: DemoMessageModelProtocol) {
-        self.onMessageChanged?(message: message)
+    fileprivate func notifyMessageChanged(_ message: DemoMessageModelProtocol) {
+        self.onMessageChanged?(message)
     }
 }

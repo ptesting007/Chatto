@@ -32,8 +32,8 @@ public protocol AccessoryViewRevealable {
 
 public struct AccessoryViewRevealerConfig {
     public let angleThresholdInRads: CGFloat
-    public let translationTransform: (rawTranslation: CGFloat) -> CGFloat
-    public init(angleThresholdInRads: CGFloat, translationTransform: (rawTranslation: CGFloat) -> CGFloat) {
+    public let translationTransform: (_ rawTranslation: CGFloat) -> CGFloat
+    public init(angleThresholdInRads: CGFloat, translationTransform: @escaping (_ rawTranslation: CGFloat) -> CGFloat) {
         self.angleThresholdInRads = angleThresholdInRads
         self.translationTransform = translationTransform
     }
@@ -81,7 +81,7 @@ class AccessoryViewRevealer: NSObject, UIGestureRecognizerDelegate {
             break
         case .changed:
             let translation = panRecognizer.translation(in: self.collectionView)
-            self.revealAccessoryView(atOffset: self.config.translationTransform(rawTranslation: -translation.x))
+            self.revealAccessoryView(atOffset: self.config.translationTransform(-translation.x))
         case .ended, .cancelled, .failed:
             self.revealAccessoryView(atOffset: 0)
         default:
@@ -112,7 +112,7 @@ class AccessoryViewRevealer: NSObject, UIGestureRecognizerDelegate {
         })
 
         for cell in self.collectionView.visibleCells {
-            if let cell = cell as? AccessoryViewRevealable where cell.allowAccessoryViewRevealing {
+            if let cell = cell as? AccessoryViewRevealable , cell.allowAccessoryViewRevealing {
                 cell.revealAccessoryView(withOffset: offset, animated: offset == 0)
             }
         }

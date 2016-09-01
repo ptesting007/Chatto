@@ -41,12 +41,12 @@ public protocol BaseMessageInteractionHandlerProtocol {
     func userDidEndLongPressOnBubble(viewModel: ViewModelT)
 }
 
-public class BaseMessagePresenter<BubbleViewT, ViewModelBuilderT, InteractionHandlerT where
+open class BaseMessagePresenter<BubbleViewT, ViewModelBuilderT, InteractionHandlerT>: BaseChatItemPresenter<BaseMessageCollectionViewCell<BubbleViewT>> where
     ViewModelBuilderT: ViewModelBuilderProtocol,
     ViewModelBuilderT.ViewModelT: MessageViewModelProtocol,
     InteractionHandlerT: BaseMessageInteractionHandlerProtocol,
     InteractionHandlerT.ViewModelT == ViewModelBuilderT.ViewModelT,
-    BubbleViewT: UIView, BubbleViewT:MaximumLayoutWidthSpecificable, BubbleViewT: BackgroundSizingQueryable>: BaseChatItemPresenter<BaseMessageCollectionViewCell<BubbleViewT>> {
+    BubbleViewT: UIView, BubbleViewT:MaximumLayoutWidthSpecificable, BubbleViewT: BackgroundSizingQueryable {
     public typealias CellT = BaseMessageCollectionViewCell<BubbleViewT>
     public typealias ModelT = ViewModelBuilderT.ModelT
     public typealias ViewModelT = ViewModelBuilderT.ViewModelT
@@ -64,17 +64,17 @@ public class BaseMessagePresenter<BubbleViewT, ViewModelBuilderT, InteractionHan
             self.interactionHandler = interactionHandler
     }
 
-    public let messageModel: ModelT
-    public let sizingCell: BaseMessageCollectionViewCell<BubbleViewT>
-    public let viewModelBuilder: ViewModelBuilderT
-    public let interactionHandler: InteractionHandlerT?
-    public let cellStyle: BaseMessageCollectionViewCellStyleProtocol
+    open let messageModel: ModelT
+    open let sizingCell: BaseMessageCollectionViewCell<BubbleViewT>
+    open let viewModelBuilder: ViewModelBuilderT
+    open let interactionHandler: InteractionHandlerT?
+    open let cellStyle: BaseMessageCollectionViewCellStyleProtocol
 
-    public private(set) final lazy var messageViewModel: ViewModelT = {
+    public fileprivate(set) final lazy var messageViewModel: ViewModelT = {
         return self.createViewModel()
     }()
 
-    public func createViewModel() -> ViewModelT {
+    open func createViewModel() -> ViewModelT {
         let viewModel = self.viewModelBuilder.createViewModel(self.messageModel)
         return viewModel
     }
@@ -93,8 +93,8 @@ public class BaseMessagePresenter<BubbleViewT, ViewModelBuilderT, InteractionHan
         self.configureCell(cell, decorationAttributes: decorationAttributes, animated: false, additionalConfiguration: nil)
     }
 
-    public var decorationAttributes: ChatItemDecorationAttributes!
-    public func configureCell(_ cell: CellT, decorationAttributes: ChatItemDecorationAttributes, animated: Bool, additionalConfiguration: (() -> Void)?) {
+    open var decorationAttributes: ChatItemDecorationAttributes!
+    open func configureCell(_ cell: CellT, decorationAttributes: ChatItemDecorationAttributes, animated: Bool, additionalConfiguration: (() -> Void)?) {
         cell.performBatchUpdates({ () -> Void in
             self.messageViewModel.showsTail = decorationAttributes.showsTail
             cell.avatarView.isHidden = !decorationAttributes.canShowAvatar
@@ -125,7 +125,7 @@ public class BaseMessagePresenter<BubbleViewT, ViewModelBuilderT, InteractionHan
         }, animated: animated, completion: nil)
     }
 
-    public override func heightForCell(maximumWidth width: CGFloat, decorationAttributes: ChatItemDecorationAttributesProtocol?) -> CGFloat {
+    open override func heightForCell(maximumWidth width: CGFloat, decorationAttributes: ChatItemDecorationAttributesProtocol?) -> CGFloat {
         guard let decorationAttributes = decorationAttributes as? ChatItemDecorationAttributes else {
             assert(false, "Expecting decoration attributes")
             return 0
@@ -134,20 +134,20 @@ public class BaseMessagePresenter<BubbleViewT, ViewModelBuilderT, InteractionHan
         return self.sizingCell.sizeThatFits(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)).height
     }
 
-    public override var canCalculateHeightInBackground: Bool {
+    open override var canCalculateHeightInBackground: Bool {
         return self.sizingCell.canCalculateSizeInBackground
     }
 
 
-    public override func cellWillBeShown() {
+    open override func cellWillBeShown() {
         self.messageViewModel.willBeShown()
     }
 
-    public override func cellWasHidden() {
+    open override func cellWasHidden() {
         self.messageViewModel.wasHidden()
     }
 
-    public override func shouldShowMenu() -> Bool {
+    open override func shouldShowMenu() -> Bool {
         guard self.canShowMenu() else { return false }
         guard let cell = self.cell else {
             assert(false, "Investigate -> Fix or remove assert")
@@ -161,7 +161,7 @@ public class BaseMessagePresenter<BubbleViewT, ViewModelBuilderT, InteractionHan
     @objc
     func willShowMenu(_ notification: Notification) {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIMenuControllerWillShowMenu, object: nil)
-        guard let cell = self.cell, menuController = notification.object as? UIMenuController else {
+        guard let cell = self.cell, let menuController = notification.object as? UIMenuController else {
             assert(false, "Investigate -> Fix or remove assert")
             return
         }

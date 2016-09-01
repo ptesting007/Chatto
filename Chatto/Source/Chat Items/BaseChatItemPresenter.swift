@@ -30,30 +30,30 @@ public enum ChatItemVisibility {
     case visible
 }
 
-public class BaseChatItemPresenter<CellT: UICollectionViewCell>: ChatItemPresenterProtocol {
+open class BaseChatItemPresenter<CellT: UICollectionViewCell>: ChatItemPresenterProtocol {
     public final weak var cell: CellT?
 
     public init() { }
 
-    public class func registerCells(_ collectionView: UICollectionView) {
+    open class func registerCells(_ collectionView: UICollectionView) {
         assert(false, "Implement in subclass")
     }
 
-    public var canCalculateHeightInBackground: Bool {
+    open var canCalculateHeightInBackground: Bool {
         return false
     }
 
-    public func heightForCell(maximumWidth width: CGFloat, decorationAttributes: ChatItemDecorationAttributesProtocol?) -> CGFloat {
+    open func heightForCell(maximumWidth width: CGFloat, decorationAttributes: ChatItemDecorationAttributesProtocol?) -> CGFloat {
         assert(false, "Implement in subclass")
         return 0
     }
 
-    public func dequeueCell(collectionView: UICollectionView, indexPath: IndexPath) -> UICollectionViewCell {
+    open func dequeueCell(collectionView: UICollectionView, indexPath: IndexPath) -> UICollectionViewCell {
         assert(false, "Implemenent in subclass")
         return UICollectionViewCell()
     }
 
-    public func configureCell(_ cell: UICollectionViewCell, decorationAttributes: ChatItemDecorationAttributesProtocol?) {
+    open func configureCell(_ cell: UICollectionViewCell, decorationAttributes: ChatItemDecorationAttributesProtocol?) {
         assert(false, "Implemenent in subclass")
     }
 
@@ -72,11 +72,11 @@ public class BaseChatItemPresenter<CellT: UICollectionViewCell>: ChatItemPresent
         }
     }
 
-    public func cellWillBeShown() {
+    open func cellWillBeShown() {
         // Hook for subclasses
     }
 
-    public func shouldShowMenu() -> Bool {
+    open func shouldShowMenu() -> Bool {
         return false
     }
 
@@ -97,15 +97,15 @@ public class BaseChatItemPresenter<CellT: UICollectionViewCell>: ChatItemPresent
         }
     }
 
-    public func cellWasHidden() {
+    open func cellWasHidden() {
         // Hook for subclasses. Here we are not visible for real.
     }
 
-    public func canPerformMenuControllerAction(_ action: Selector) -> Bool {
+    open func canPerformMenuControllerAction(_ action: Selector) -> Bool {
         return false
     }
 
-    public func performMenuControllerAction(_ action: Selector) {
+    open func performMenuControllerAction(_ action: Selector) {
         assert(self.canPerformMenuControllerAction(action))
     }
 }

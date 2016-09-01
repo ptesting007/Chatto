@@ -56,7 +56,7 @@ extension BaseChatViewController: ChatDataSourceDelegateProtocol {
     }
 
     public func enqueueMessageCountReductionIfNeeded() {
-        guard let preferredMaxMessageCount = self.constants.preferredMaxMessageCount where (self.chatDataSource?.chatItems.count ?? 0) > preferredMaxMessageCount else { return }
+        guard let preferredMaxMessageCount = self.constants.preferredMaxMessageCount , (self.chatDataSource?.chatItems.count ?? 0) > preferredMaxMessageCount else { return }
         self.updateQueue.addTask { [weak self] (completion) -> () in
             guard let sSelf = self else { return }
             sSelf.chatDataSource?.adjustNumberOfMessages(preferredMaxCount: sSelf.constants.preferredMaxMessageCountAdjustment, focusPosition: sSelf.focusPosition, completion: { (didAdjust) -> Void in
@@ -131,10 +131,10 @@ extension BaseChatViewController: ChatDataSourceDelegateProtocol {
         case preservePosition(rectForReferenceIndexPathBeforeUpdate: CGRect?, referenceIndexPathAfterUpdate: IndexPath?)
     }
 
-    func performBatchUpdates(updateModelClosure: () -> Void,
+    func performBatchUpdates(updateModelClosure: @escaping () -> Void,
                                                 changes: CollectionChanges,
                                                 updateType: UpdateType,
-                                                completion: () -> Void) {
+                                                completion: @escaping () -> Void) {
 
         let usesBatchUpdates: Bool
         do { // Recover from too fast updates...
@@ -226,16 +226,16 @@ extension BaseChatViewController: ChatDataSourceDelegateProtocol {
         }
     }
 
-    private func updateModels(newItems: [ChatItemProtocol], oldItems: ChatItemCompanionCollection, updateType: UpdateType, completion: () -> Void) {
+    private func updateModels(newItems: [ChatItemProtocol], oldItems: ChatItemCompanionCollection, updateType: UpdateType, completion: @escaping () -> Void) {
         let collectionViewWidth = self.collectionView.bounds.width
         let updateType = self.isFirstLayout ? .firstLoad : updateType
         let performInBackground = updateType != .firstLoad
 
         self.autoLoadingEnabled = false
-        let perfomBatchUpdates: (changes: CollectionChanges, updateModelClosure: () -> Void) -> ()  = { [weak self] modelUpdate in
+        let perfomBatchUpdates: (_ changes: CollectionChanges, _ updateModelClosure: @escaping () -> Void) -> ()  = { [weak self] (changes, updateModelClosure) in
             self?.performBatchUpdates(
-                updateModelClosure: modelUpdate.updateModelClosure,
-                changes: modelUpdate.changes,
+                updateModelClosure: updateModelClosure,
+                changes: changes,
                 updateType: updateType,
                 completion: { () -> Void in
                     self?.autoLoadingEnabled = true
@@ -254,12 +254,12 @@ extension BaseChatViewController: ChatDataSourceDelegateProtocol {
             DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async { () -> Void in
                 let modelUpdate = createModelUpdate()
                 DispatchQueue.main.async(execute: { () -> Void in
-                    perfomBatchUpdates(changes: modelUpdate.changes, updateModelClosure: modelUpdate.updateModelClosure)
+                    perfomBatchUpdates(modelUpdate.changes, modelUpdate.updateModelClosure)
                 })
             }
         } else {
             let modelUpdate = createModelUpdate()
-            perfomBatchUpdates(changes: modelUpdate.changes, updateModelClosure: modelUpdate.updateModelClosure)
+            perfomBatchUpdates(modelUpdate.changes, modelUpdate.updateModelClosure)
         }
     }
 
@@ -284,7 +284,7 @@ extension BaseChatViewController: ChatDataSourceDelegateProtocol {
             // Oherwise updateVisibleCells may try to update existing cell with a new presenter which is working with a different type of cell
 
             // Optimization: reuse presenter if it's the same instance.
-            if let oldChatItemCompanion = oldItems[decoratedChatItem.uid] where oldChatItemCompanion.chatItem === chatItem {
+            if let oldChatItemCompanion = oldItems[decoratedChatItem.uid] , oldChatItemCompanion.chatItem === chatItem {
                 presenter = oldChatItemCompanion.presenter
             } else {
                 presenter = self.createPresenterForChatItem(decoratedChatItem.chatItem)

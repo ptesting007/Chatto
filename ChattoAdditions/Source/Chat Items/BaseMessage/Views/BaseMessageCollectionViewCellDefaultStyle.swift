@@ -24,7 +24,7 @@
 
 import UIKit
 
-public class BaseMessageCollectionViewCellDefaultStyle: BaseMessageCollectionViewCellStyleProtocol {
+open class BaseMessageCollectionViewCellDefaultStyle: BaseMessageCollectionViewCellStyleProtocol {
 
     typealias Class = BaseMessageCollectionViewCellDefaultStyle
 
@@ -32,8 +32,8 @@ public class BaseMessageCollectionViewCellDefaultStyle: BaseMessageCollectionVie
         let incoming: () -> UIColor
         let outgoing: () -> UIColor
         public init(
-            incoming: @autoclosure(escaping) () -> UIColor,
-            outgoing: @autoclosure(escaping) () -> UIColor) {
+            incoming: @autoclosure @escaping () -> UIColor,
+            outgoing: @autoclosure @escaping () -> UIColor) {
                 self.incoming = incoming
                 self.outgoing = outgoing
         }
@@ -45,10 +45,10 @@ public class BaseMessageCollectionViewCellDefaultStyle: BaseMessageCollectionVie
         public let borderOutgoingTail: () -> UIImage
         public let borderOutgoingNoTail: () -> UIImage
         public init(
-            borderIncomingTail: @autoclosure(escaping) () -> UIImage,
-            borderIncomingNoTail: @autoclosure(escaping) () -> UIImage,
-            borderOutgoingTail: @autoclosure(escaping) () -> UIImage,
-            borderOutgoingNoTail: @autoclosure(escaping) () -> UIImage) {
+            borderIncomingTail: @autoclosure @escaping () -> UIImage,
+            borderIncomingNoTail: @autoclosure @escaping () -> UIImage,
+            borderOutgoingTail: @autoclosure @escaping () -> UIImage,
+            borderOutgoingNoTail: @autoclosure @escaping () -> UIImage) {
                 self.borderIncomingTail = borderIncomingTail
                 self.borderIncomingNoTail = borderIncomingNoTail
                 self.borderOutgoingTail = borderOutgoingTail
@@ -60,8 +60,8 @@ public class BaseMessageCollectionViewCellDefaultStyle: BaseMessageCollectionVie
         let normal: () -> UIImage
         let highlighted: () -> UIImage
         public init(
-            normal: @autoclosure(escaping) () -> UIImage,
-            highlighted: @autoclosure(escaping) () -> UIImage) {
+            normal: @autoclosure @escaping () -> UIImage,
+            highlighted: @autoclosure @escaping () -> UIImage) {
                 self.normal = normal
                 self.highlighted = highlighted
         }
@@ -71,8 +71,8 @@ public class BaseMessageCollectionViewCellDefaultStyle: BaseMessageCollectionVie
         let font: () -> UIFont
         let color: () -> UIColor
         public init(
-            font: @autoclosure(escaping) () -> UIFont,
-            color: @autoclosure(escaping) () -> UIColor) {
+            font: @autoclosure @escaping () -> UIFont,
+            color: @autoclosure @escaping () -> UIColor) {
                 self.font = font
                 self.color = color
         }
@@ -108,31 +108,31 @@ public class BaseMessageCollectionViewCellDefaultStyle: BaseMessageCollectionVie
             self.avatarStyle = avatarStyle
     }
 
-    public lazy var baseColorIncoming: UIColor = self.colors.incoming()
-    public lazy var baseColorOutgoing: UIColor = self.colors.outgoing()
+    open lazy var baseColorIncoming: UIColor = self.colors.incoming()
+    open lazy var baseColorOutgoing: UIColor = self.colors.outgoing()
 
-    public lazy var borderIncomingTail: UIImage? = self.bubbleBorderImages?.borderIncomingTail()
-    public lazy var borderIncomingNoTail: UIImage? = self.bubbleBorderImages?.borderIncomingNoTail()
-    public lazy var borderOutgoingTail: UIImage? = self.bubbleBorderImages?.borderOutgoingTail()
-    public lazy var borderOutgoingNoTail: UIImage? = self.bubbleBorderImages?.borderOutgoingNoTail()
+    open lazy var borderIncomingTail: UIImage? = self.bubbleBorderImages?.borderIncomingTail()
+    open lazy var borderIncomingNoTail: UIImage? = self.bubbleBorderImages?.borderIncomingNoTail()
+    open lazy var borderOutgoingTail: UIImage? = self.bubbleBorderImages?.borderOutgoingTail()
+    open lazy var borderOutgoingNoTail: UIImage? = self.bubbleBorderImages?.borderOutgoingNoTail()
 
-    public lazy var failedIcon: UIImage = self.failedIconImages.normal()
-    public lazy var failedIconHighlighted: UIImage = self.failedIconImages.highlighted()
-    private lazy var dateFont: UIFont = self.dateTextStyle.font()
-    private lazy var dateFontColor: UIColor = self.dateTextStyle.color()
+    open lazy var failedIcon: UIImage = self.failedIconImages.normal()
+    open lazy var failedIconHighlighted: UIImage = self.failedIconImages.highlighted()
+    fileprivate lazy var dateFont: UIFont = self.dateTextStyle.font()
+    fileprivate lazy var dateFontColor: UIColor = self.dateTextStyle.color()
 
-    private lazy var dateStringAttributes: [String : AnyObject] = {
+    fileprivate lazy var dateStringAttributes: [String : AnyObject] = {
         return [
             NSFontAttributeName : self.dateFont,
             NSForegroundColorAttributeName: self.dateFontColor
         ]
     }()
 
-    public func attributedStringForDate(_ date: String) -> NSAttributedString {
+    open func attributedStringForDate(_ date: String) -> NSAttributedString {
         return NSAttributedString(string: date, attributes: self.dateStringAttributes)
     }
 
-    public func borderImage(viewModel: MessageViewModelProtocol) -> UIImage? {
+    open func borderImage(viewModel: MessageViewModelProtocol) -> UIImage? {
         switch (viewModel.isIncoming, viewModel.showsTail) {
         case (true, true):
             return self.borderIncomingTail
@@ -145,15 +145,15 @@ public class BaseMessageCollectionViewCellDefaultStyle: BaseMessageCollectionVie
         }
     }
 
-    public func avatarSize(viewModel: MessageViewModelProtocol) -> CGSize {
+    open func avatarSize(viewModel: MessageViewModelProtocol) -> CGSize {
         return self.avatarStyle.size
     }
 
-    public func avatarVerticalAlignment(viewModel: MessageViewModelProtocol) -> VerticalAlignment {
+    open func avatarVerticalAlignment(viewModel: MessageViewModelProtocol) -> VerticalAlignment {
         return self.avatarStyle.alignment
     }
 
-    public func layoutConstants(viewModel: MessageViewModelProtocol) -> BaseMessageCollectionViewCellLayoutConstants {
+    open func layoutConstants(viewModel: MessageViewModelProtocol) -> BaseMessageCollectionViewCellLayoutConstants {
         return self.layoutConstants
     }
 }

@@ -48,7 +48,7 @@ public final class TextMessageCollectionViewCell: BaseMessageCollectionViewCell<
         return TextBubbleView()
     }
 
-    public override func performBatchUpdates(_ updateClosure: () -> Void, animated: Bool, completion: (() -> Void)?) {
+    public override func performBatchUpdates(_ updateClosure: @escaping () -> Void, animated: Bool, completion: (() -> Void)?) {
         super.performBatchUpdates({ () -> Void in
             self.bubbleView.performBatchUpdates(updateClosure, animated: false, completion: nil)
         }, animated: animated, completion: completion)

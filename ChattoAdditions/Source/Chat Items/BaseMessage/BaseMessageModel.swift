@@ -68,13 +68,13 @@ public extension DecoratedMessageModelProtocol {
     }
 }
 
-public class MessageModel: MessageModelProtocol {
-    public var uid: String
-    public var senderId: String
-    public var type: String
-    public var isIncoming: Bool
-    public var date: Date
-    public var status: MessageStatus
+open class MessageModel: MessageModelProtocol {
+    open var uid: String
+    open var senderId: String
+    open var type: String
+    open var isIncoming: Bool
+    open var date: Date
+    open var status: MessageStatus
 
     public init(uid: String, senderId: String, type: String, isIncoming: Bool, date: Date, status: MessageStatus) {
         self.uid = uid

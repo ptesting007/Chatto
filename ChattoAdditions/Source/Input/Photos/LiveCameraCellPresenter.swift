@@ -31,7 +31,7 @@ final class LiveCameraCellPresenter {
         self.unsubscribeFromAppNotifications()
     }
 
-    private weak var cell: LiveCameraCell?
+    fileprivate weak var cell: LiveCameraCell?
 
     func cellWillBeShown(_ cell: LiveCameraCell) {
         self.cell = cell
@@ -47,7 +47,7 @@ final class LiveCameraCellPresenter {
         }
     }
 
-    private func configureCell() {
+    fileprivate func configureCell() {
         guard let cameraCell = self.cell else { return }
 
         cameraCell.updateWithAuthorizationStatus(self.cameraAuthorizationStatus)
@@ -59,14 +59,14 @@ final class LiveCameraCellPresenter {
         }
 
         cameraCell.onWasAddedToWindow = { [weak self] (cell) in
-            guard let sSelf = self where sSelf.cell === cell else { return }
+            guard let sSelf = self , sSelf.cell === cell else { return }
             if !sSelf.cameraPickerIsVisible {
                 sSelf.startCapturing()
             }
         }
 
         cameraCell.onWasRemovedFromWindow = { [weak self] (cell) in
-            guard let sSelf = self where sSelf.cell === cell else { return }
+            guard let sSelf = self , sSelf.cell === cell else { return }
             if !sSelf.cameraPickerIsVisible {
                 sSelf.stopCapturing()
             }
@@ -76,19 +76,19 @@ final class LiveCameraCellPresenter {
     // MARK: - App Notifications
     lazy var notificationCenter = NotificationCenter.default
 
-    private func subscribeToAppNotifications() {
-        self.notificationCenter.addObserver(self, selector: #selector(LiveCameraCellPresenter.handleWillResignActiveNotification), name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
-        self.notificationCenter.addObserver(self, selector: #selector(LiveCameraCellPresenter.handleDidBecomeActiveNotification), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
+    fileprivate func subscribeToAppNotifications() {
+        self.notificationCenter.addObserver(self, selector: #selector(LiveCameraCellPresenter.handleWillResignActiveNotification), name: Notification.Name.UIApplicationWillResignActive, object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(LiveCameraCellPresenter.handleDidBecomeActiveNotification), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
     }
 
-    private func unsubscribeFromAppNotifications() {
+    fileprivate func unsubscribeFromAppNotifications() {
         self.notificationCenter.removeObserver(self)
     }
 
-    private var needsRestoreCaptureSession = false
+    fileprivate var needsRestoreCaptureSession = false
 
     @objc
-    private func handleWillResignActiveNotification() {
+    fileprivate func handleWillResignActiveNotification() {
         if self.captureSession.isCapturing ?? false {
             self.needsRestoreCaptureSession = true
             self.stopCapturing()
@@ -96,7 +96,7 @@ final class LiveCameraCellPresenter {
     }
 
     @objc
-    private func handleDidBecomeActiveNotification() {
+    fileprivate func handleDidBecomeActiveNotification() {
         if self.needsRestoreCaptureSession {
             self.needsRestoreCaptureSession = false
             self.startCapturing()
@@ -130,7 +130,7 @@ final class LiveCameraCellPresenter {
         }
     }
 
-    private var isCaptureAvailable: Bool {
+    fileprivate var isCaptureAvailable: Bool {
         switch self.cameraAuthorizationStatus {
         case .notDetermined, .restricted, .denied:
             return false

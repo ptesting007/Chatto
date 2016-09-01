@@ -50,7 +50,7 @@ extension BaseChatViewController: ChatCollectionViewLayoutDelegate {
         }
 
         if self.updatesConfig.fastUpdates {
-            if let visibleCell = self.visibleCells[indexPath] where visibleCell === cell {
+            if let visibleCell = self.visibleCells[indexPath] , visibleCell === cell {
                 self.visibleCells[indexPath] = nil
             } else {
                 self.visibleCells.forEach({ (indexPath, storedCell) in
@@ -89,13 +89,14 @@ extension BaseChatViewController: ChatCollectionViewLayoutDelegate {
         return self.presenterForIndexPath(indexPath).shouldShowMenu() ?? false
     }
 
+
     @objc(collectionView:canPerformAction:forItemAtIndexPath:withSender:)
-    public func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: AnyObject?) -> Bool {
+    public func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
         return self.presenterForIndexPath(indexPath).canPerformMenuControllerAction(action) ?? false
     }
 
     @objc(collectionView:performAction:forItemAtIndexPath:withSender:)
-    public func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: AnyObject?) {
+    public func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
         self.presenterForIndexPath(indexPath).performMenuControllerAction(action)
     }
 

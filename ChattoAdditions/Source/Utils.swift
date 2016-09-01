@@ -40,12 +40,12 @@ public enum VerticalAlignment {
 }
 
 public extension CGSize {
-    func bma_insetBy(dx: CGFloat, dy: CGFloat) -> CGSize {
+    func bma_insetBy(_ dx: CGFloat, dy: CGFloat) -> CGSize {
         return CGSize(width: self.width - dx, height: self.height - dy)
     }
 
-    func bma_outsetBy(dx: CGFloat, dy: CGFloat) -> CGSize {
-        return self.bma_insetBy(dx: -dx, dy: -dy)
+    func bma_outsetBy(_ dx: CGFloat, dy: CGFloat) -> CGSize {
+        return self.bma_insetBy(-dx, dy: -dy)
     }
 }
 
@@ -169,7 +169,7 @@ public extension UIImage {
         context.translateBy(x: 0, y: rect.height)
         context.scaleBy(x: 1.0, y: -1.0)
         context.setBlendMode(.normal)
-        context.draw(in: rect, image: self.cgImage!)
+        context.__draw(in: rect, image: self.cgImage!)
         context.clip(to: rect, mask: self.cgImage!)
         color.setFill()
         context.addRect(rect)

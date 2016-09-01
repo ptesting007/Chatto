@@ -32,7 +32,7 @@ protocol ChatInputBarPresenter: class {
     func onDidReceiveFocusOnItem(_ item: ChatInputItemProtocol)
 }
 
-@objc public class BasicChatInputBarPresenter: NSObject, ChatInputBarPresenter {
+@objc open class BasicChatInputBarPresenter: NSObject, ChatInputBarPresenter {
     let chatInputBar: ChatInputBar
     let chatInputItems: [ChatInputItemProtocol]
     let notificationCenter: NotificationCenter
@@ -58,7 +58,7 @@ protocol ChatInputBarPresenter: class {
         self.notificationCenter.removeObserver(self)
     }
 
-    private(set) var focusedItem: ChatInputItemProtocol? {
+    fileprivate(set) var focusedItem: ChatInputItemProtocol? {
         willSet {
             self.focusedItem?.selected = false
         }
@@ -67,7 +67,7 @@ protocol ChatInputBarPresenter: class {
         }
     }
 
-    private func updateFirstResponderWithInputItem(_ inputItem: ChatInputItemProtocol) {
+    fileprivate func updateFirstResponderWithInputItem(_ inputItem: ChatInputItemProtocol) {
         let responder = self.chatInputBar.textView
         let inputView = inputItem.inputView
         responder?.inputView = inputView
@@ -79,7 +79,7 @@ protocol ChatInputBarPresenter: class {
         }
     }
 
-    private func firstKeyboardInputItem() -> ChatInputItemProtocol? {
+    fileprivate func firstKeyboardInputItem() -> ChatInputItemProtocol? {
         var firstKeyboardInputItem: ChatInputItemProtocol? = nil
         for inputItem in self.chatInputItems {
             if inputItem.presentationMode == .keyboard {
@@ -90,9 +90,9 @@ protocol ChatInputBarPresenter: class {
         return firstKeyboardInputItem
     }
 
-    private var lastKnownKeyboardHeight: CGFloat?
+    fileprivate var lastKnownKeyboardHeight: CGFloat?
 
-    private func setHeight(forInputView inputView: UIView?) {
+    fileprivate func setHeight(forInputView inputView: UIView?) {
         guard let inputView = inputView else { return }
         guard let keyboardHeight = self.lastKnownKeyboardHeight else { return }
 
@@ -110,22 +110,22 @@ protocol ChatInputBarPresenter: class {
         }
     }
 
-    private var allowListenToChangeFrameEvents = true
+    fileprivate var allowListenToChangeFrameEvents = true
 
     @objc
-    private func keyboardDidChangeFrame(_ notification: Notification) {
+    fileprivate func keyboardDidChangeFrame(_ notification: Notification) {
         guard self.allowListenToChangeFrameEvents else { return }
         guard let value = (notification as NSNotification).userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue else { return }
         self.lastKnownKeyboardHeight = value.cgRectValue.height
     }
 
     @objc
-    private func keyboardWillHide(_ notification: Notification) {
+    fileprivate func keyboardWillHide(_ notification: Notification) {
         self.allowListenToChangeFrameEvents = false
     }
 
     @objc
-    private func keyboardWillShow(_ notification: Notification) {
+    fileprivate func keyboardWillShow(_ notification: Notification) {
         self.allowListenToChangeFrameEvents = true
     }
 }
@@ -147,9 +147,9 @@ extension BasicChatInputBarPresenter {
 
     func onSendButtonPressed() {
         if let focusedItem = self.focusedItem {
-            focusedItem.handleInput(self.chatInputBar.inputText)
+            focusedItem.handleInput(self.chatInputBar.inputText as AnyObject)
         } else if let keyboardItem = self.firstKeyboardInputItem() {
-            keyboardItem.handleInput(self.chatInputBar.inputText)
+            keyboardItem.handleInput(self.chatInputBar.inputText as AnyObject)
         }
         self.chatInputBar.inputText = ""
     }

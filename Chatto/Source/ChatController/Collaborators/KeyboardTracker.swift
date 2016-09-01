@@ -52,10 +52,10 @@ class KeyboardTracker {
     var inputContainer: UIView
     private var notificationCenter: NotificationCenter
 
-    typealias LayoutBlock = (bottomMargin: CGFloat) -> Void
+    typealias LayoutBlock = (_ bottomMargin: CGFloat) -> Void
     private var layoutBlock: LayoutBlock
 
-    init(viewController: UIViewController, inputContainer: UIView, layoutBlock: LayoutBlock, notificationCenter: NotificationCenter) {
+    init(viewController: UIViewController, inputContainer: UIView, layoutBlock: @escaping LayoutBlock, notificationCenter: NotificationCenter) {
         self.view = viewController.view
         self.layoutBlock = layoutBlock
         self.inputContainer = inputContainer
@@ -159,12 +159,12 @@ class KeyboardTracker {
 
     private func layoutInputContainer(withBottomConstraint constraint: CGFloat) {
         self.isPerformingForcedLayout = true
-        self.layoutBlock(bottomMargin: constraint)
+        self.layoutBlock(constraint)
         self.isPerformingForcedLayout = false
     }
 }
 
-private class KeyboardTrackingView: UIView {
+fileprivate class KeyboardTrackingView: UIView {
 
     var positionChangedCallback: (() -> Void)?
     var observedView: UIView?
@@ -192,7 +192,7 @@ private class KeyboardTrackingView: UIView {
         self.isHidden = true
     }
 
-    private var preferredSize: CGSize = .zero {
+    var preferredSize: CGSize = .zero {
         didSet {
             if oldValue != self.preferredSize {
                 self.invalidateIntrinsicContentSize()
@@ -201,7 +201,7 @@ private class KeyboardTrackingView: UIView {
         }
     }
 
-    private override var intrinsicContentSize: CGSize {
+    override var intrinsicContentSize: CGSize {
         return self.preferredSize
     }
 
@@ -219,8 +219,8 @@ private class KeyboardTrackingView: UIView {
         super.willMove(toSuperview: newSuperview)
     }
 
-    private override func observeValue(forKeyPath keyPath: String?, of object: AnyObject?, change: [NSKeyValueChangeKey : AnyObject]?, context: UnsafeMutablePointer<Void>?) {
-        guard let object = object, superview = self.superview else { return }
+    fileprivate override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        guard let object = object as? UIView, let superview = self.superview else { return }
         if object === superview {
             guard let sChange = change else { return }
             let oldCenter = (sChange[NSKeyValueChangeKey.oldKey] as! NSValue).cgPointValue

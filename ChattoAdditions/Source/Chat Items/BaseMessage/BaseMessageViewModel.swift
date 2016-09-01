@@ -97,22 +97,22 @@ extension DecoratedMessageViewModelProtocol {
     }
 }
 
-public class MessageViewModel: MessageViewModelProtocol {
-    public var isIncoming: Bool {
+open class MessageViewModel: MessageViewModelProtocol {
+    open var isIncoming: Bool {
         return self.messageModel.isIncoming
     }
 
-    public var status: MessageViewModelStatus {
+    open var status: MessageViewModelStatus {
         return self.messageModel.status.viewModelStatus()
     }
 
-    public var showsTail: Bool
-    public lazy var date: String = {
+    open var showsTail: Bool
+    open lazy var date: String = {
         return self.dateFormatter.string(from: self.messageModel.date as Date)
     }()
 
-    public let dateFormatter: DateFormatter
-    public private(set) var messageModel: MessageModelProtocol
+    open let dateFormatter: DateFormatter
+    open fileprivate(set) var messageModel: MessageModelProtocol
 
     public init(dateFormatter: DateFormatter, showsTail: Bool, messageModel: MessageModelProtocol, avatarImage: UIImage?) {
         self.dateFormatter = dateFormatter
@@ -121,14 +121,14 @@ public class MessageViewModel: MessageViewModelProtocol {
         self.avatarImage = Observable<UIImage?>(avatarImage)
     }
 
-    public var showsFailedIcon: Bool {
+    open var showsFailedIcon: Bool {
         return self.status == .failed
     }
 
-    public var avatarImage: Observable<UIImage?>
+    open var avatarImage: Observable<UIImage?>
 }
 
-public class MessageViewModelDefaultBuilder {
+open class MessageViewModelDefaultBuilder {
 
     public init() {}
 
@@ -140,7 +140,7 @@ public class MessageViewModelDefaultBuilder {
         return formatter
     }()
 
-    public func createMessageViewModel(_ message: MessageModelProtocol) -> MessageViewModelProtocol {
+    open func createMessageViewModel(_ message: MessageModelProtocol) -> MessageViewModelProtocol {
         // Override to use default avatarImage
         return MessageViewModel(dateFormatter: MessageViewModelDefaultBuilder.dateFormatter, showsTail: false, messageModel: message, avatarImage: nil)
     }

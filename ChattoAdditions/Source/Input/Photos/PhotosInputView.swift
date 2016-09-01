@@ -39,16 +39,16 @@ protocol PhotosInputViewDelegate: class {
 
 class PhotosInputView: UIView, PhotosInputViewProtocol {
 
-    private struct Constants {
+    fileprivate struct Constants {
         static let liveCameraItemIndex = 0
     }
 
-    private lazy var collectionViewQueue = SerialTaskQueue()
-    private var collectionView: UICollectionView!
-    private var collectionViewLayout: UICollectionViewFlowLayout!
-    private var dataProvider: PhotosInputDataProviderProtocol!
-    private var cellProvider: PhotosInputCellProviderProtocol!
-    private var itemSizeCalculator: PhotosInputViewItemSizeCalculator!
+    fileprivate lazy var collectionViewQueue = SerialTaskQueue()
+    fileprivate var collectionView: UICollectionView!
+    fileprivate var collectionViewLayout: UICollectionViewFlowLayout!
+    fileprivate var dataProvider: PhotosInputDataProviderProtocol!
+    fileprivate var cellProvider: PhotosInputCellProviderProtocol!
+    fileprivate var itemSizeCalculator: PhotosInputViewItemSizeCalculator!
 
     var cameraAuthorizationStatus: AVAuthorizationStatus {
         return AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo)
@@ -81,7 +81,7 @@ class PhotosInputView: UIView, PhotosInputViewProtocol {
         self.collectionView.delegate = nil
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         self.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.configureCollectionView()
         self.configureItemSizeCalculator()
@@ -92,13 +92,13 @@ class PhotosInputView: UIView, PhotosInputViewProtocol {
         self.requestAccessToPhoto()
     }
 
-    private func configureItemSizeCalculator() {
+    fileprivate func configureItemSizeCalculator() {
         self.itemSizeCalculator = PhotosInputViewItemSizeCalculator()
         self.itemSizeCalculator.itemsPerRow = 3
         self.itemSizeCalculator.interitemSpace = 1
     }
 
-    private func requestAccessToVideo() {
+    fileprivate func requestAccessToVideo() {
         guard self.cameraAuthorizationStatus != .authorized else { return }
 
         AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo) { (success) -> Void in
@@ -108,7 +108,7 @@ class PhotosInputView: UIView, PhotosInputViewProtocol {
         }
     }
 
-    private func reloadVideoItem() {
+    fileprivate func reloadVideoItem() {
         self.collectionViewQueue.addTask { [weak self] (completion) in
             guard let sSelf = self else { return }
 
@@ -120,7 +120,7 @@ class PhotosInputView: UIView, PhotosInputViewProtocol {
         }
     }
 
-    private func requestAccessToPhoto() {
+    fileprivate func requestAccessToPhoto() {
         guard self.photoLibraryAuthorizationStatus != .authorized else {
             self.replacePlaceholderItemsWithPhotoItems()
             return
@@ -135,7 +135,7 @@ class PhotosInputView: UIView, PhotosInputViewProtocol {
         }
     }
 
-    private func replacePlaceholderItemsWithPhotoItems() {
+    fileprivate func replacePlaceholderItemsWithPhotoItems() {
         self.collectionViewQueue.addTask { [weak self] (completion) in
             guard let sSelf = self else { return }
 
@@ -155,11 +155,11 @@ class PhotosInputView: UIView, PhotosInputViewProtocol {
         }
     }
 
-    private lazy var cameraPicker: PhotosInputCameraPicker = {
+    fileprivate lazy var cameraPicker: PhotosInputCameraPicker = {
         return PhotosInputCameraPicker(presentingController: self.presentingController)
     }()
 
-    private lazy var liveCameraPresenter = LiveCameraCellPresenter()
+    fileprivate lazy var liveCameraPresenter = LiveCameraCellPresenter()
 }
 
 extension PhotosInputView: UICollectionViewDataSource {
@@ -252,7 +252,7 @@ extension PhotosInputView: UICollectionViewDelegateFlowLayout {
 }
 
 extension PhotosInputView: PhotosInputDataProviderDelegate {
-    func handlePhotosInpudDataProviderUpdate(_ dataProvider: PhotosInputDataProviderProtocol, updateBlock: () -> Void) {
+    func handlePhotosInpudDataProviderUpdate(_ dataProvider: PhotosInputDataProviderProtocol, updateBlock: @escaping () -> Void) {
         self.collectionViewQueue.addTask { [weak self] (completion) in
             guard let sSelf = self else { return }
 
@@ -265,7 +265,7 @@ extension PhotosInputView: PhotosInputDataProviderDelegate {
 }
 
 private class PhotosInputCollectionViewLayout: UICollectionViewFlowLayout {
-    private override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+    fileprivate override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         return newBounds.width != self.collectionView?.bounds.width
     }
 }

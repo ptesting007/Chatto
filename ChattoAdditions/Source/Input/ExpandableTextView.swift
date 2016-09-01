@@ -24,16 +24,16 @@
 
 import UIKit
 
-public class ExpandableTextView: UITextView {
+open class ExpandableTextView: UITextView {
 
-    private let placeholder: UITextView = UITextView()
+    fileprivate let placeholder: UITextView = UITextView()
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.commonInit()
     }
 
-    override public var contentSize: CGSize {
+    override open var contentSize: CGSize {
         didSet {
             self.invalidateIntrinsicContentSize()
             self.layoutIfNeeded() // needed?
@@ -51,28 +51,28 @@ public class ExpandableTextView: UITextView {
     }
 
 
-    override public func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
         self.placeholder.frame = self.bounds
     }
 
-    public override var intrinsicContentSize: CGSize {
+    open override var intrinsicContentSize: CGSize {
         return self.contentSize
     }
 
-    override public var text: String! {
+    override open var text: String! {
         didSet {
             self.textDidChange()
         }
     }
 
-    override public var textContainerInset: UIEdgeInsets {
+    override open var textContainerInset: UIEdgeInsets {
         didSet {
             self.configurePlaceholder()
         }
     }
 
-    override public var textAlignment: NSTextAlignment {
+    override open var textAlignment: NSTextAlignment {
         didSet {
             self.configurePlaceholder()
         }
@@ -105,7 +105,7 @@ public class ExpandableTextView: UITextView {
         }
     }
 
-    private func scrollToCaret() {
+    fileprivate func scrollToCaret() {
         if let textRange = self.selectedTextRange {
             var rect = caretRect(for: textRange.end)
             rect = CGRect(origin: rect.origin, size: CGSize(width: rect.width, height: rect.height + textContainerInset.bottom))
@@ -114,7 +114,7 @@ public class ExpandableTextView: UITextView {
         }
     }
 
-    private func updatePlaceholderVisibility() {
+    fileprivate func updatePlaceholderVisibility() {
         if self.text == "" {
             self.showPlaceholder()
         } else {
@@ -122,15 +122,15 @@ public class ExpandableTextView: UITextView {
         }
     }
 
-    private func showPlaceholder() {
+    fileprivate func showPlaceholder() {
         self.addSubview(self.placeholder)
     }
 
-    private func hidePlaceholder() {
+    fileprivate func hidePlaceholder() {
         self.placeholder.removeFromSuperview()
     }
 
-    private func configurePlaceholder() {
+    fileprivate func configurePlaceholder() {
         self.placeholder.translatesAutoresizingMaskIntoConstraints = false
         self.placeholder.isEditable = false
         self.placeholder.isSelectable = false

@@ -29,8 +29,8 @@ protocol PhotosInputCellProviderProtocol {
 }
 
 class PhotosInputPlaceholderCellProvider: PhotosInputCellProviderProtocol {
-    private let reuseIdentifier = "PhotosPlaceholderCellProvider"
-    private let collectionView: UICollectionView
+    fileprivate let reuseIdentifier = "PhotosPlaceholderCellProvider"
+    fileprivate let collectionView: UICollectionView
     init(collectionView: UICollectionView) {
         self.collectionView = collectionView
         self.collectionView.register(PhotosInputPlaceholderCell.self, forCellWithReuseIdentifier: self.reuseIdentifier)
@@ -42,9 +42,9 @@ class PhotosInputPlaceholderCellProvider: PhotosInputCellProviderProtocol {
 }
 
 class PhotosInputCellProvider: PhotosInputCellProviderProtocol {
-    private let reuseIdentifier = "PhotosCellProvider"
-    private let collectionView: UICollectionView
-    private let dataProvider: PhotosInputDataProviderProtocol
+    fileprivate let reuseIdentifier = "PhotosCellProvider"
+    fileprivate let collectionView: UICollectionView
+    fileprivate let dataProvider: PhotosInputDataProviderProtocol
     init(collectionView: UICollectionView, dataProvider: PhotosInputDataProviderProtocol) {
         self.dataProvider = dataProvider
         self.collectionView = collectionView
@@ -57,8 +57,8 @@ class PhotosInputCellProvider: PhotosInputCellProviderProtocol {
         return cell
     }
 
-    private let previewRequests = NSMapTable<PhotosInputCell, NSNumber>.weakToStrongObjects()
-    private func configureCell(_ cell: PhotosInputCell, atIndexPath indexPath: IndexPath) {
+    fileprivate let previewRequests = NSMapTable<PhotosInputCell, NSNumber>.weakToStrongObjects()
+    fileprivate func configureCell(_ cell: PhotosInputCell, atIndexPath indexPath: IndexPath) {
         if let requestID = self.previewRequests.object(forKey: cell) {
             self.previewRequests.removeObject(forKey: cell)
             self.dataProvider.cancelPreviewImageRequest(requestID.int32Value)
@@ -69,7 +69,7 @@ class PhotosInputCellProvider: PhotosInputCellProviderProtocol {
         var imageProvidedSynchronously = true
         var requestID: Int32 = -1
         requestID = self.dataProvider.requestPreviewImageAtIndex(index, targetSize: targetSize) { [weak self, weak cell] image in
-            guard let sSelf = self, sCell = cell else { return }
+            guard let sSelf = self, let sCell = cell else { return }
             // We can get here even afer calling cancelPreviewImageRequest (looks liek a race condition in PHImageManager)
             // Also, according to PHImageManager's documentation, this block can be called several times: we may receive an image with a low quality and then receive an update with a better one
             // This can also be called before returning from requestPreviewImageAtIndex (synchronously) if the image is cached by PHImageManager

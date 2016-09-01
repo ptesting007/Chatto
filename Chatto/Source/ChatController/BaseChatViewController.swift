@@ -24,7 +24,7 @@
 
 import UIKit
 
-public class BaseChatViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+open class BaseChatViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
 
     public typealias ChatItemCompanionCollection = ReadOnlyOrderedDictionary<ChatItemCompanion>
 
@@ -72,12 +72,12 @@ public class BaseChatViewController: UIViewController, UICollectionViewDataSourc
         self.collectionView?.dataSource = nil
     }
 
-    public override func loadView() {
+    open override func loadView() {
         self.view = BaseChatViewControllerView() // http://stackoverflow.com/questions/24596031/uiviewcontroller-with-inputaccessoryview-is-not-deallocated
         self.view.backgroundColor = UIColor.white
     }
 
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         self.addCollectionView()
         self.addInputViews()
@@ -97,12 +97,12 @@ public class BaseChatViewController: UIViewController, UICollectionViewDataSourc
         }
     }
 
-    public override func viewWillAppear(_ animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.keyboardTracker.startTracking()
     }
 
-    public override func viewWillDisappear(_ animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.keyboardTracker.stopTracking()
     }
@@ -174,7 +174,7 @@ public class BaseChatViewController: UIViewController, UICollectionViewDataSourc
     var keyboardTracker: KeyboardTracker!
 
     public var isFirstLayout: Bool = true
-    override public func viewDidLayoutSubviews() {
+    override open func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         self.adjustCollectionViewInsets()
@@ -267,17 +267,17 @@ public class BaseChatViewController: UIViewController, UICollectionViewDataSourc
 
     // MARK: Subclass overrides
 
-    public func createPresenterFactory() -> ChatItemPresenterFactoryProtocol {
+    open func createPresenterFactory() -> ChatItemPresenterFactoryProtocol {
         // Default implementation
         return ChatItemPresenterFactory(presenterBuildersByType: self.createPresenterBuilders())
     }
 
-    public func createPresenterBuilders() -> [ChatItemType: [ChatItemPresenterBuilderProtocol]] {
+    open func createPresenterBuilders() -> [ChatItemType: [ChatItemPresenterBuilderProtocol]] {
         assert(false, "Override in subclass")
         return [ChatItemType: [ChatItemPresenterBuilderProtocol]]()
     }
 
-    public func createChatInputView() -> UIView {
+    open func createChatInputView() -> UIView {
         assert(false, "Override in subclass")
         return UIView()
     }
@@ -294,7 +294,7 @@ public class BaseChatViewController: UIViewController, UICollectionViewDataSourc
 
 extension BaseChatViewController { // Rotation
 
-    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         let shouldScrollToBottom = self.isScrolledAtBottom()
         let referenceIndexPath = self.collectionView.indexPathsForVisibleItems.first

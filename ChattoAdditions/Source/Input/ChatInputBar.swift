@@ -35,12 +35,12 @@ public protocol ChatInputBarDelegate: class {
 }
 
 @objc
-public class ChatInputBar: ReusableXibView {
+open class ChatInputBar: ReusableXibView {
 
-    public weak var delegate: ChatInputBarDelegate?
+    open weak var delegate: ChatInputBarDelegate?
     weak var presenter: ChatInputBarPresenter?
 
-    public var shouldEnableSendButton = { (inputBar: ChatInputBar) -> Bool in
+    open var shouldEnableSendButton = { (inputBar: ChatInputBar) -> Bool in
         return !inputBar.textView.text.isEmpty
     }
 
@@ -56,7 +56,7 @@ public class ChatInputBar: ReusableXibView {
     @IBOutlet var constraintsForHiddenSendButton: [NSLayoutConstraint]!
     @IBOutlet var tabBarContainerHeightConstraint: NSLayoutConstraint!
 
-    class public func loadNib() -> ChatInputBar {
+    class open func loadNib() -> ChatInputBar {
         let view = Bundle(for: self).loadNibNamed(self.nibName(), owner: nil, options: nil)!.first as! ChatInputBar
         view.translatesAutoresizingMaskIntoConstraints = false
         view.frame = CGRect.zero
@@ -67,7 +67,7 @@ public class ChatInputBar: ReusableXibView {
         return "ChatInputBar"
     }
 
-    public override func awakeFromNib() {
+    open override func awakeFromNib() {
         super.awakeFromNib()
         self.topBorderHeightConstraint.constant = 1 / UIScreen.main.scale
         self.textView.scrollsToTop = false
@@ -76,7 +76,7 @@ public class ChatInputBar: ReusableXibView {
         self.sendButton.isEnabled = false
     }
 
-    public override func updateConstraints() {
+    open override func updateConstraints() {
         if self.showsTextView {
             NSLayoutConstraint.activate(self.constraintsForVisibleTextView)
             NSLayoutConstraint.deactivate(self.constraintsForHiddenTextView)
@@ -94,7 +94,7 @@ public class ChatInputBar: ReusableXibView {
         super.updateConstraints()
     }
 
-    public var showsTextView: Bool = true {
+    open var showsTextView: Bool = true {
         didSet {
             self.setNeedsUpdateConstraints()
             self.setNeedsLayout()
@@ -102,7 +102,7 @@ public class ChatInputBar: ReusableXibView {
         }
     }
 
-    public var showsSendButton: Bool = true {
+    open var showsSendButton: Bool = true {
         didSet {
             self.setNeedsUpdateConstraints()
             self.setNeedsLayout()
@@ -110,9 +110,9 @@ public class ChatInputBar: ReusableXibView {
         }
     }
 
-    public var maxCharactersCount: UInt? // nil -> unlimited
+    open var maxCharactersCount: UInt? // nil -> unlimited
 
-    private func updateIntrinsicContentSizeAnimated() {
+    fileprivate func updateIntrinsicContentSizeAnimated() {
         let options: UIViewAnimationOptions = [.beginFromCurrentState, .allowUserInteraction, .curveEaseInOut]
         UIView.animate(withDuration: 0.25, delay: 0, options: options, animations: { () -> Void in
             self.invalidateIntrinsicContentSize()
@@ -121,7 +121,7 @@ public class ChatInputBar: ReusableXibView {
         }, completion: nil)
     }
 
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         self.updateConstraints() // Interface rotation or size class changes will reset constraints as defined in interface builder -> constraintsForVisibleTextView will be activated
         super.layoutSubviews()
     }
@@ -138,7 +138,7 @@ public class ChatInputBar: ReusableXibView {
         }
     }
 
-    public func becomeFirstResponderWithInputView(_ inputView: UIView?) {
+    open func becomeFirstResponderWithInputView(_ inputView: UIView?) {
         self.textView.inputView = inputView
 
         if self.textView.isFirstResponder {
@@ -148,7 +148,7 @@ public class ChatInputBar: ReusableXibView {
         }
     }
 
-    public var inputText: String {
+    open var inputText: String {
         get {
             return self.textView.text
         }
@@ -158,7 +158,7 @@ public class ChatInputBar: ReusableXibView {
         }
     }
 
-    private func updateSendButton() {
+    fileprivate func updateSendButton() {
         self.sendButton.isEnabled = self.shouldEnableSendButton(self)
     }
 

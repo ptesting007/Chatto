@@ -24,7 +24,7 @@
 
 import UIKit
 
-public class TextMessageCollectionViewCellDefaultStyle: TextMessageCollectionViewCellStyleProtocol {
+open class TextMessageCollectionViewCellDefaultStyle: TextMessageCollectionViewCellStyleProtocol {
     typealias Class = TextMessageCollectionViewCellDefaultStyle
 
     public struct BubbleImages {
@@ -33,10 +33,10 @@ public class TextMessageCollectionViewCellDefaultStyle: TextMessageCollectionVie
         let outgoingTail: () -> UIImage
         let outgoingNoTail: () -> UIImage
         public init(
-            incomingTail: @autoclosure(escaping) () -> UIImage,
-            incomingNoTail: @autoclosure(escaping) () -> UIImage,
-            outgoingTail: @autoclosure(escaping) () -> UIImage,
-            outgoingNoTail: @autoclosure(escaping) () -> UIImage) {
+            incomingTail: @autoclosure @escaping () -> UIImage,
+            incomingNoTail: @autoclosure @escaping () -> UIImage,
+            outgoingTail: @autoclosure @escaping () -> UIImage,
+            outgoingNoTail: @autoclosure @escaping () -> UIImage) {
                 self.incomingTail = incomingTail
                 self.incomingNoTail = incomingNoTail
                 self.outgoingTail = outgoingTail
@@ -51,9 +51,9 @@ public class TextMessageCollectionViewCellDefaultStyle: TextMessageCollectionVie
         let incomingInsets: UIEdgeInsets
         let outgoingInsets: UIEdgeInsets
         public init(
-            font: @autoclosure(escaping) () -> UIFont,
-            incomingColor: @autoclosure(escaping) () -> UIColor,
-            outgoingColor: @autoclosure(escaping) () -> UIColor,
+            font: @autoclosure @escaping () -> UIFont,
+            incomingColor: @autoclosure @escaping () -> UIColor,
+            outgoingColor: @autoclosure @escaping () -> UIColor,
             incomingInsets: UIEdgeInsets,
             outgoingInsets: UIEdgeInsets) {
                 self.font = font
@@ -77,7 +77,7 @@ public class TextMessageCollectionViewCellDefaultStyle: TextMessageCollectionVie
             self.baseStyle = baseStyle
     }
 
-    lazy private var images: [ImageKey: UIImage] = {
+    lazy fileprivate var images: [ImageKey: UIImage] = {
         return [
             .template(isIncoming: true, showsTail: true) : self.bubbleImages.incomingTail(),
             .template(isIncoming: true, showsTail: false) : self.bubbleImages.incomingNoTail(),
@@ -90,23 +90,23 @@ public class TextMessageCollectionViewCellDefaultStyle: TextMessageCollectionVie
     lazy var incomingColor: UIColor = self.textStyle.incomingColor()
     lazy var outgoingColor: UIColor = self.textStyle.outgoingColor()
 
-    public func textFont(viewModel: TextMessageViewModelProtocol, isSelected: Bool) -> UIFont {
+    open func textFont(viewModel: TextMessageViewModelProtocol, isSelected: Bool) -> UIFont {
         return self.font
     }
 
-    public func textColor(viewModel: TextMessageViewModelProtocol, isSelected: Bool) -> UIColor {
+    open func textColor(viewModel: TextMessageViewModelProtocol, isSelected: Bool) -> UIColor {
         return viewModel.isIncoming ? self.incomingColor : self.outgoingColor
     }
 
-    public func textInsets(viewModel: TextMessageViewModelProtocol, isSelected: Bool) -> UIEdgeInsets {
+    open func textInsets(viewModel: TextMessageViewModelProtocol, isSelected: Bool) -> UIEdgeInsets {
         return viewModel.isIncoming ? self.textStyle.incomingInsets : self.textStyle.outgoingInsets
     }
 
-    public func bubbleImageBorder(viewModel: TextMessageViewModelProtocol, isSelected: Bool) -> UIImage? {
+    open func bubbleImageBorder(viewModel: TextMessageViewModelProtocol, isSelected: Bool) -> UIImage? {
         return self.baseStyle.borderImage(viewModel: viewModel)
     }
 
-    public func bubbleImage(viewModel: TextMessageViewModelProtocol, isSelected: Bool) -> UIImage {
+    open func bubbleImage(viewModel: TextMessageViewModelProtocol, isSelected: Bool) -> UIImage {
         let key = ImageKey.normal(isIncoming: viewModel.isIncoming, status: viewModel.status, showsTail: viewModel.showsTail, isSelected: isSelected)
 
         if let image = self.images[key] {
@@ -124,7 +124,7 @@ public class TextMessageCollectionViewCellDefaultStyle: TextMessageCollectionVie
         return UIImage()
     }
 
-    private func createImage(templateImage image: UIImage, isIncoming: Bool, status: MessageViewModelStatus, isSelected: Bool) -> UIImage {
+    fileprivate func createImage(templateImage image: UIImage, isIncoming: Bool, status: MessageViewModelStatus, isSelected: Bool) -> UIImage {
         var color = isIncoming ? self.baseStyle.baseColorIncoming : self.baseStyle.baseColorOutgoing
 
         switch status {
@@ -141,7 +141,7 @@ public class TextMessageCollectionViewCellDefaultStyle: TextMessageCollectionVie
         return image.bma_tintWithColor(color)
     }
 
-    private enum ImageKey: Hashable {
+    fileprivate enum ImageKey: Hashable {
         case template(isIncoming: Bool, showsTail: Bool)
         case normal(isIncoming: Bool, status: MessageViewModelStatus, showsTail: Bool, isSelected: Bool)
 
@@ -154,7 +154,7 @@ public class TextMessageCollectionViewCellDefaultStyle: TextMessageCollectionVie
             }
         }
 
-        private func calculateHash(withHashValues hashes: [Int]) -> Int {
+        fileprivate func calculateHash(withHashValues hashes: [Int]) -> Int {
             return hashes.reduce(0, { 31 &* $0 &+ $1.hashValue })
         }
     }

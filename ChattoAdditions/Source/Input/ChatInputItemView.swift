@@ -39,7 +39,7 @@ class ChatInputItemView: UIView {
         self.commonInit()
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ChatInputItemView.handleTap))
         gestureRecognizer.cancelsTouchesInView = false
         self.addGestureRecognizer(gestureRecognizer)

@@ -34,9 +34,9 @@ public struct TabInputButtonAppearance {
     }
 }
 
-public class TabInputButton: UIButton {
+open class TabInputButton: UIButton {
 
-    static public func makeInputButton(withAppearance appearance: TabInputButtonAppearance) -> TabInputButton {
+    static open func makeInputButton(withAppearance appearance: TabInputButtonAppearance) -> TabInputButton {
         let images = appearance.images
         let button = TabInputButton(type: .custom)
         button.isExclusiveTouch = true
@@ -47,9 +47,9 @@ public class TabInputButton: UIButton {
         return button
     }
 
-    private var size: CGSize?
+    fileprivate var size: CGSize?
 
-    public override var intrinsicContentSize: CGSize {
+    open override var intrinsicContentSize: CGSize {
         if let size = self.size {
             return size
         }

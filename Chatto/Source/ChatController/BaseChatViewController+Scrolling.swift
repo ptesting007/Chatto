@@ -99,7 +99,7 @@ extension BaseChatViewController {
     }
 
     public func scrollToPreservePosition(oldRefRect: CGRect?, newRefRect: CGRect?) {
-        guard let oldRefRect = oldRefRect, newRefRect = newRefRect else {
+        guard let oldRefRect = oldRefRect, let newRefRect = newRefRect else {
             return
         }
         let diffY = newRefRect.minY - oldRefRect.minY

@@ -29,13 +29,13 @@ import Chatto
 
 class LiveCameraCell: UICollectionViewCell {
 
-    private struct Constants {
+    fileprivate struct Constants {
         static let backgroundColor = UIColor(red: 24.0/255.0, green: 101.0/255.0, blue: 245.0/255.0, alpha: 1)
         static let cameraImageName = "camera"
         static let lockedCameraImageName = "camera_lock"
     }
 
-    private var iconImageView: UIImageView!
+    fileprivate var iconImageView: UIImageView!
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -47,7 +47,7 @@ class LiveCameraCell: UICollectionViewCell {
         self.commonInit()
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         self.configureIcon()
         self.contentView.backgroundColor = Constants.backgroundColor
     }
@@ -68,15 +68,15 @@ class LiveCameraCell: UICollectionViewCell {
         }
     }
 
-    typealias CellCallback = (cell: LiveCameraCell) -> Void
+    typealias CellCallback = (_ cell: LiveCameraCell) -> Void
 
     var onWasAddedToWindow: CellCallback?
     var onWasRemovedFromWindow: CellCallback?
     override func didMoveToWindow() {
         if let _ = self.window {
-            self.onWasAddedToWindow?(cell: self)
+            self.onWasAddedToWindow?(self)
         } else {
-            self.onWasRemovedFromWindow?(cell: self)
+            self.onWasRemovedFromWindow?(self)
         }
     }
 
@@ -85,15 +85,15 @@ class LiveCameraCell: UICollectionViewCell {
         self.updateIcon()
     }
 
-    private var authorizationStatus: AVAuthorizationStatus = .notDetermined
+    fileprivate var authorizationStatus: AVAuthorizationStatus = .notDetermined
 
-    private func configureIcon() {
+    fileprivate func configureIcon() {
         self.iconImageView = UIImageView()
         self.iconImageView.contentMode = .center
         self.contentView.addSubview(self.iconImageView)
     }
 
-    private func updateIcon() {
+    fileprivate func updateIcon() {
         switch self.authorizationStatus {
         case .notDetermined, .authorized:
             self.iconImageView.image = UIImage(named: Constants.cameraImageName, in: Bundle(for: LiveCameraCell.self), compatibleWith: nil)

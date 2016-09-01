@@ -30,9 +30,9 @@ class PhotosInputCameraPicker: NSObject {
         self.presentingController = presentingController
     }
 
-    private var completionBlocks: (onImageTaken: ((UIImage?) -> Void)?, onCameraPickerDismissed: (() -> Void)?)?
+    fileprivate var completionBlocks: (onImageTaken: ((UIImage?) -> Void)?, onCameraPickerDismissed: (() -> Void)?)?
 
-    func presentCameraPicker(onImageTaken: (UIImage?) -> Void, onCameraPickerDismissed: () -> Void) {
+    func presentCameraPicker(onImageTaken: @escaping (UIImage?) -> Void, onCameraPickerDismissed: @escaping () -> Void) {
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
             onImageTaken(nil)
             onCameraPickerDismissed()
@@ -53,7 +53,7 @@ class PhotosInputCameraPicker: NSObject {
         presentingController.present(controller, animated: true, completion:nil)
     }
 
-    private func finishPickingImage(_ image: UIImage?, fromPicker picker: UIImagePickerController) {
+    fileprivate func finishPickingImage(_ image: UIImage?, fromPicker picker: UIImagePickerController) {
         let (onImageTaken, onCameraPickerDismissed) = self.completionBlocks ?? (nil, nil)
         picker.dismiss(animated: true, completion: onCameraPickerDismissed)
         onImageTaken?(image)
@@ -62,7 +62,7 @@ class PhotosInputCameraPicker: NSObject {
 
 extension PhotosInputCameraPicker: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         self.finishPickingImage(info[UIImagePickerControllerOriginalImage] as? UIImage, fromPicker: picker)
     }
 

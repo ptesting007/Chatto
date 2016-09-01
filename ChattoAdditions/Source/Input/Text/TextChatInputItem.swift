@@ -24,16 +24,16 @@
 
 import Foundation
 
-public class TextChatInputItem {
+open class TextChatInputItem {
     typealias Class = TextChatInputItem
-    public var textInputHandler: ((String) -> Void)?
+    open var textInputHandler: ((String) -> Void)?
 
     let buttonAppearance: TabInputButtonAppearance
     public init(tabInputButtonAppearance: TabInputButtonAppearance = Class.createDefaultButtonAppearance()) {
         self.buttonAppearance = tabInputButtonAppearance
     }
 
-    public class func createDefaultButtonAppearance() -> TabInputButtonAppearance {
+    open class func createDefaultButtonAppearance() -> TabInputButtonAppearance {
         let images: [UIControlState: UIImage] = [
             UIControlState(): UIImage(named: "text-icon-unselected", in: Bundle(for: TextChatInputItem.self), compatibleWith: nil)!,
             .selected: UIImage(named: "text-icon-selected", in: Bundle(for: TextChatInputItem.self), compatibleWith: nil)!,
@@ -42,11 +42,11 @@ public class TextChatInputItem {
         return TabInputButtonAppearance(images: images, size: nil)
     }
 
-    lazy private var internalTabView: TabInputButton = {
+    lazy fileprivate var internalTabView: TabInputButton = {
         return TabInputButton.makeInputButton(withAppearance: self.buttonAppearance)
     }()
 
-    public var selected = false {
+    open var selected = false {
         didSet {
             self.internalTabView.isSelected = self.selected
         }

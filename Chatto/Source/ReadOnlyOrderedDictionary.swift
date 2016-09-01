@@ -23,7 +23,7 @@ THE SOFTWARE.
 */
 import Foundation
 
-public struct ReadOnlyOrderedDictionary<T where T: UniqueIdentificable>: Collection {
+public struct ReadOnlyOrderedDictionary<T>: Collection where T: UniqueIdentificable {
 
     private let items: [T]
     private let itemIndexesById: [String: Int] // Maping to the position in the array instead the item itself for better performance

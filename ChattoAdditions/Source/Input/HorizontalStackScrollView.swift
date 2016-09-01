@@ -24,10 +24,10 @@
 
 import UIKit
 
-public class HorizontalStackScrollView: UIScrollView {
+open class HorizontalStackScrollView: UIScrollView {
 
-    private var arrangedViews: [UIView] = []
-    private var arrangedViewContraints: [NSLayoutConstraint] = []
+    fileprivate var arrangedViews: [UIView] = []
+    fileprivate var arrangedViewContraints: [NSLayoutConstraint] = []
     var interItemSpacing: CGFloat = 0.0 {
         didSet {
             self.setNeedsUpdateConstraints()
@@ -43,20 +43,20 @@ public class HorizontalStackScrollView: UIScrollView {
         self.setNeedsUpdateConstraints()
     }
 
-    override public func updateConstraints() {
+    override open func updateConstraints() {
         super.updateConstraints()
         self.removeConstraintsForArrangedViews()
         self.addConstraintsForArrengedViews()
     }
 
-    private func removeConstraintsForArrangedViews() {
+    fileprivate func removeConstraintsForArrangedViews() {
         for constraint in self.arrangedViewContraints {
             self.removeConstraint(constraint)
         }
         self.arrangedViewContraints.removeAll()
     }
 
-    private func addConstraintsForArrengedViews() {
+    fileprivate func addConstraintsForArrengedViews() {
         for (index, view) in arrangedViews.enumerated() {
             switch index {
             case 0:
